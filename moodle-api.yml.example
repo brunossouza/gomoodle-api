@@ -1,0 +1,4 @@
+#URL to moodle
+url: "http://moodle.domain"
+#Token de conexao do moodle
+token: "123456789asdzxcasd156dzs4a51sda2"
