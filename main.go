@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 
-	"github.com/brunossouza/gomoodle-api/models/categories"
-	"github.com/brunossouza/gomoodle-api/models/courses"
-	"github.com/brunossouza/gomoodle-api/models/enrollments"
-	"github.com/brunossouza/gomoodle-api/models/users"
 	"github.com/brunossouza/gomoodle-api/moodle"
+	"github.com/brunossouza/gomoodle-api/moodle/models/categories"
+	"github.com/brunossouza/gomoodle-api/moodle/models/courses"
+	"github.com/brunossouza/gomoodle-api/moodle/models/enrollments"
+	"github.com/brunossouza/gomoodle-api/moodle/models/users"
 )
 
 func main() {

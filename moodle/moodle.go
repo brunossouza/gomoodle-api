@@ -7,12 +7,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/brunossouza/gomoodle-api/config"
-	"github.com/brunossouza/gomoodle-api/models/categories"
-	"github.com/brunossouza/gomoodle-api/models/courses"
-	"github.com/brunossouza/gomoodle-api/models/enrollments"
-	"github.com/brunossouza/gomoodle-api/models/response"
-	"github.com/brunossouza/gomoodle-api/models/users"
+	"github.com/brunossouza/gomoodle-api/moodle/config"
+	"github.com/brunossouza/gomoodle-api/moodle/models/categories"
+	"github.com/brunossouza/gomoodle-api/moodle/models/courses"
+	"github.com/brunossouza/gomoodle-api/moodle/models/enrollments"
+	"github.com/brunossouza/gomoodle-api/moodle/models/response"
+	"github.com/brunossouza/gomoodle-api/moodle/models/users"
 )
 
 func generateEndpoint(method string) string {
