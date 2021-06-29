@@ -223,7 +223,7 @@ func ParseUserToUpdateFormData(indice int, user User) (string, error) {
 	}
 
 	if user.UserPicture == 0 {
-		data += fmt.Sprintf("&users[%d][userpicture]=1", indice)
+		data += fmt.Sprintf("&users[%d][userpicture]=%d", indice, user.UserPicture)
 	}
 
 	data = parseUserToFormData(indice, user, data)
