@@ -7,6 +7,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+// User model
 type User struct {
 	ID                int           //ID of the user. Used only on update request.
 	CreatePassword    bool          //Optional - True(createpassword=1) if password should be created and mailed to user. Used only on create request.
@@ -42,31 +43,36 @@ type User struct {
 	Preferences       []Preference  //Optional - User preferences.
 }
 
+//CustomField user model
 type CustomField struct {
 	Type  string `validate:"required"` //The name of the custom field
 	Value string `validate:"required"` //The value of the custom field
 }
 
+//Prefernce model
 type Preference struct {
 	Type  string `validate:"required"` //The name of the preference
 	Value string `validate:"required"` //The value of the preference
 }
 
+//verifyUsersDataRequired Verify if user has all required fields.
 func verifyUsersDataRequired(user User) error {
 	return validator.New().Struct(user)
 }
 
+//verifyCustomFieldDataRequired Verify if CustomField has all fields with value.
 func verifyCustomFieldDataRequired(field CustomField) error {
 	return validator.New().Struct(field)
 }
 
+//verifyPreferenceDataRequired Verify if Preference has all fields with value.
 func verifyPreferenceDataRequired(preference Preference) error {
 	return validator.New().Struct(preference)
 }
 
+//parseUserToFormData Parses all optional data entered to the expected pattern of moodle rest API.
 func parseUserToFormData(indice int, user User, data string) string {
 
-	//Optional data
 	if user.Auth != "" {
 		data += fmt.Sprintf("&users[%d][auth]=%s", indice, url.QueryEscape(user.Auth))
 	}
@@ -165,6 +171,7 @@ func parseUserToFormData(indice int, user User, data string) string {
 	return data
 }
 
+//ParseUserToCreateFormData Parse all mandatory and optional data for creating a new user to the expected default of moodle rest API.
 func ParseUserToCreateFormData(indice int, user User) (string, error) {
 	//Parse commom data
 	err := verifyUsersDataRequired(user)
@@ -187,6 +194,7 @@ func ParseUserToCreateFormData(indice int, user User) (string, error) {
 	return data, nil
 }
 
+//ParseUserToUpdateFormData Parse all mandatory and optional data to update the informed user data to the expected default of moodle rest API.
 func ParseUserToUpdateFormData(indice int, user User) (string, error) {
 	if user.ID == 0 {
 		return "", fmt.Errorf("the id field must be informed to perform the update")
