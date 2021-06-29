@@ -45,7 +45,7 @@ func CreateUsers(usersSlice []users.User) (response.Responses, error) {
 	var data string
 
 	for idx, user := range usersSlice {
-		if userData, err := users.ParseUserToFormData(idx, user); err == nil {
+		if userData, err := users.ParseUserToCreateFormData(idx, user); err == nil {
 			data = fmt.Sprintf("%s%s", data, userData)
 		}
 	}

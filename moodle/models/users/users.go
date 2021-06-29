@@ -8,35 +8,38 @@ import (
 )
 
 type User struct {
-	CreatePassword    bool          //Optional - True(createpassword=1) if password should be created and mailed to user.
+	ID                int           //ID of the user. Used only on update request.
+	CreatePassword    bool          //Optional - True(createpassword=1) if password should be created and mailed to user. Used only on create request.
 	Username          string        `validate:"required"` //Username policy is defined in Moodle security config.
-	Auth              string        //Default to "manual" //Auth plugins include manual, ldap, etc
-	Password          string        //Optional - Plain text password consisting of any characters
-	Firstname         string        `validate:"required"` //The first name(s) of the user
-	Lastname          string        `validate:"required"` //The family name of the user
-	Email             string        `validate:"required"` //A valid and unique email address
-	MailDisplay       int           //Optional - Email display
-	City              string        //Optional - Home city of the user
-	Country           string        //Optional - Home country code of the user, such as AU or CZ
-	Timezone          string        //Optional - Timezone code such as Australia/Perth, or 99 for default
-	Description       string        //Optional - User profile description, no HTML
-	FirstnamePhonetic string        //Optional - The first name(s) phonetically of the user
-	LastnamePhonetic  string        //Optional - The family name phonetically of the user
-	Middlename        string        //Optional - The middle name of the user
-	AlternateName     string        //Optional - The alternate name of the user
-	Interests         string        //Optional - User interests (separated by commas)
-	Idnumber          string        //Default  - "" //An arbitrary ID code number perhaps from the institution
-	Institution       string        //Optional - institution
-	Department        string        //Optional - department
-	Phone1            string        //Optional - Phone 1
-	Phone2            string        //Optional - Phone 2
-	Address           string        //Optional - Postal address
-	Lang              string        //Default  - "en" //Language code such as "en", must exist on server
-	CalendarType      string        //Default  - "gregorian" //Calendar type such as "gregorian", must exist on server
-	Theme             string        //Optional - Theme name such as "standard", must exist on server
-	MailFormat        int           //Optional - Mail format code is 0 for plain text, 1 for HTML etc
-	CustomFields      []CustomField //Optional - User custom fields (also known as user profil fields)
-	Preferences       []Preference  //Optional - User preferences
+	Auth              string        //Default to "manual" //Auth plugins include manual, ldap, etc.
+	Suspended         int           //Optional - Suspend user account, either false to enable user login or true to disable it. Used only on update request.
+	Password          string        //Optional - Plain text password consisting of any characters.
+	Firstname         string        `validate:"required"` //The first name(s) of the user.
+	Lastname          string        `validate:"required"` //The family name of the user.
+	Email             string        `validate:"required"` //A valid and unique email address.
+	MailDisplay       int           //Optional - Email display.
+	City              string        //Optional - Home city of the user.
+	Country           string        //Optional - Home country code of the user, such as AU or CZ.
+	Timezone          string        //Optional - Timezone code such as Australia/Perth, or 99 for default.
+	Description       string        //Optional - User profile description, no HTML.
+	UserPicture       int           //Optional - The itemid where the new user picture has been uploaded to, 0 to delete. Used only on update request.
+	FirstNamePhonetic string        //Optional - The first name(s) phonetically of the user.
+	LastNamePhonetic  string        //Optional - The family name phonetically of the user.
+	MiddleName        string        //Optional - The middle name of the user.
+	AlternateName     string        //Optional - The alternate name of the user.
+	Interests         string        //Optional - User interests (separated by commas).
+	IDNumber          string        //Default  - "" //An arbitrary ID code number perhaps from the institution.
+	Institution       string        //Optional - institution.
+	Department        string        //Optional - department.
+	Phone1            string        //Optional - Phone 1.
+	Phone2            string        //Optional - Phone 2.
+	Address           string        //Optional - Postal address.
+	Lang              string        //Default  - "en" //Language code such as "en", must exist on server.
+	CalendarType      string        //Default  - "gregorian" //Calendar type such as "gregorian", must exist on server.
+	Theme             string        //Optional - Theme name such as "standard", must exist on server.
+	MailFormat        int           //Optional - Mail format code is 0 for plain text, 1 for HTML etc.
+	CustomFields      []CustomField //Optional - User custom fields (also known as user profil fields).
+	Preferences       []Preference  //Optional - User preferences.
 }
 
 type CustomField struct {
@@ -61,20 +64,7 @@ func verifyPreferenceDataRequired(preference Preference) error {
 	return validator.New().Struct(preference)
 }
 
-func ParseUserToFormData(indice int, user User) (string, error) {
-	err := verifyUsersDataRequired(user)
-	if err != nil {
-		return "", err
-	}
-	//Required data
-	data := fmt.Sprintf("&users[%d][username]=%s&users[%d][firstname]=%s&users[%d][lastname]=%s&users[%d][email]=%s", indice, url.QueryEscape(user.Username), indice, url.QueryEscape(user.Firstname), indice, url.QueryEscape(user.Lastname), indice, url.QueryEscape(user.Email))
-
-	//Required data - Password
-	if user.CreatePassword {
-		data += fmt.Sprintf("&users[%d][createpassword]=1", indice)
-	} else {
-		data += fmt.Sprintf("&users[%d][password]=%s", indice, url.QueryEscape(user.Password))
-	}
+func parseUserToFormData(indice int, user User, data string) string {
 
 	//Optional data
 	if user.Auth != "" {
@@ -101,16 +91,16 @@ func ParseUserToFormData(indice int, user User) (string, error) {
 		data += fmt.Sprintf("&users[%d][description]=%s", indice, url.QueryEscape(user.Description))
 	}
 
-	if user.FirstnamePhonetic != "" {
-		data += fmt.Sprintf("&users[%d][firstnamephonetic]=%s", indice, url.QueryEscape(user.FirstnamePhonetic))
+	if user.FirstNamePhonetic != "" {
+		data += fmt.Sprintf("&users[%d][firstnamephonetic]=%s", indice, url.QueryEscape(user.FirstNamePhonetic))
 	}
 
-	if user.LastnamePhonetic != "" {
-		data += fmt.Sprintf("&users[%d][lastnamephonetic]=%s", indice, url.QueryEscape(user.LastnamePhonetic))
+	if user.LastNamePhonetic != "" {
+		data += fmt.Sprintf("&users[%d][lastnamephonetic]=%s", indice, url.QueryEscape(user.LastNamePhonetic))
 	}
 
-	if user.Middlename != "" {
-		data += fmt.Sprintf("&users[%d][middlename]=%s", indice, url.QueryEscape(user.Middlename))
+	if user.MiddleName != "" {
+		data += fmt.Sprintf("&users[%d][middlename]=%s", indice, url.QueryEscape(user.MiddleName))
 	}
 
 	if user.AlternateName != "" {
@@ -121,8 +111,8 @@ func ParseUserToFormData(indice int, user User) (string, error) {
 		data += fmt.Sprintf("&users[%d][interests]=%s", indice, url.QueryEscape(user.Interests))
 	}
 
-	if user.Idnumber != "" {
-		data += fmt.Sprintf("&users[%d][idnumber]=%s", indice, url.QueryEscape(user.Idnumber))
+	if user.IDNumber != "" {
+		data += fmt.Sprintf("&users[%d][idnumber]=%s", indice, url.QueryEscape(user.IDNumber))
 	}
 
 	if user.Institution != "" {
@@ -172,5 +162,71 @@ func ParseUserToFormData(indice int, user User) (string, error) {
 			data += fmt.Sprintf("&users[%d][preferences][%d][type]=%s&users[%d][preferences][%d][value]=%s", indice, idx, url.QueryEscape(preference.Type), indice, idx, url.QueryEscape(preference.Value))
 		}
 	}
+	return data
+}
+
+func ParseUserToCreateFormData(indice int, user User) (string, error) {
+	//Parse commom data
+	err := verifyUsersDataRequired(user)
+	if err != nil {
+		return "", err
+	}
+
+	//Required data
+	data := fmt.Sprintf("&users[%d][username]=%s&users[%d][firstname]=%s&users[%d][lastname]=%s&users[%d][email]=%s", indice, url.QueryEscape(user.Username), indice, url.QueryEscape(user.Firstname), indice, url.QueryEscape(user.Lastname), indice, url.QueryEscape(user.Email))
+
+	//Optional data create form
+	if user.CreatePassword {
+		data += fmt.Sprintf("&users[%d][createpassword]=1", indice)
+	} else {
+		data += fmt.Sprintf("&users[%d][password]=%s", indice, url.QueryEscape(user.Password))
+	}
+
+	data = parseUserToFormData(indice, user, data)
+
+	return data, nil
+}
+
+func ParseUserToUpdateFormData(indice int, user User) (string, error) {
+	if user.ID == 0 {
+		return "", fmt.Errorf("the id field must be informed to perform the update")
+	}
+
+	//Parse commom data
+	err := verifyUsersDataRequired(user)
+	if err != nil {
+		return "", err
+	}
+
+	//Requered data to update
+	data := fmt.Sprintf("users[%d][id]=%d", indice, user.ID)
+
+	//Optional data update form
+	if user.Username == "" {
+		data += fmt.Sprintf("&users[%d][username]=%s", indice, url.QueryEscape(user.Username))
+	}
+
+	if user.Firstname == "" {
+		data += fmt.Sprintf("&users[%d][firstname]=%s", indice, url.QueryEscape(user.Firstname))
+	}
+
+	if user.Lastname == "" {
+		data += fmt.Sprintf("&users[%d][lastname]=%s", indice, url.QueryEscape(user.Lastname))
+	}
+
+	if user.Email == "" {
+		data += fmt.Sprintf("&users[%d][email]=%s", indice, url.QueryEscape(user.Email))
+	}
+
+	if user.Suspended == 0 {
+		data += fmt.Sprintf("&users[%d][suspended]=1", indice)
+	}
+
+	if user.UserPicture == 0 {
+		data += fmt.Sprintf("&users[%d][userpicture]=1", indice)
+	}
+
+	data = parseUserToFormData(indice, user, data)
+
 	return data, nil
 }
