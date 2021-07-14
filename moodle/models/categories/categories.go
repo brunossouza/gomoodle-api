@@ -8,6 +8,7 @@ import (
 )
 
 type Category struct {
+	ID                int    //course id. Used only on update request.
 	Name              string `validate:"required"` //new category name
 	Parent            int    //Default to "0" - the parent category id inside which the new category will be created - set to 0 for a root category
 	Idnumber          string //Optional - the new category idnumber

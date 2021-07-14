@@ -34,7 +34,6 @@ type Course struct {
 	ForceTheme          string               //Optional - name of the force theme
 	CourseFormatOptions []CourseFormatOption //Optional - additional options for particular course format
 	CustomFields        []CustomField        //Optional - custom fields for the course
-
 }
 
 type CourseFormatOption struct {
