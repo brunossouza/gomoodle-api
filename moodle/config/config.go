@@ -52,10 +52,7 @@ func NewMoodleApiConfig() (*MoodleApiConfig, error) {
 	config := readConfigFile()
 
 	if config.URL != "" && config.Token != "" {
-		if strings.HasSuffix(config.URL, "/") {
-			config.URL = config.URL[:len(config.URL)-1]
-		}
-
+		config.URL = strings.TrimSuffix(config.URL, "/")
 		return config, nil
 	}
 
