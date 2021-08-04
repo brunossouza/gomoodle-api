@@ -1,4 +1,4 @@
-module github.com/brunossouza/gomoodle-api/v0.0.1
+module github.com/brunossouza/gomoodle-api
 
 go 1.16
 
