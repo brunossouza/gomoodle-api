@@ -19,14 +19,22 @@ type MoodleApiConfig struct {
 	Token string `yaml:"token"`
 }
 
-// ReadConfigFile read configuration file
-func readConfigFile() (cfg *MoodleApiConfig) {
-
+func CreateConfigFile() {
 	f, err := os.Open(configFileName)
 	if err != nil {
 		d, _ := yaml.Marshal(&MoodleApiConfig{})
 		_ = ioutil.WriteFile(configFileName, d, 0644)
 		log.Fatalln(err.Error(), "- creating config.yml")
+	}
+	f.Close()
+}
+
+// ReadConfigFile read configuration file
+func readConfigFile() (cfg *MoodleApiConfig) {
+
+	f, err := os.Open(configFileName)
+	if err != nil {
+		CreateConfigFile()
 	}
 	defer f.Close()
 
